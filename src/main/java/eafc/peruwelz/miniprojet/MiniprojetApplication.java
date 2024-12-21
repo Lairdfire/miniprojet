@@ -29,11 +29,11 @@ public class MiniprojetApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/SingleView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/MainView.fxml"));
         loader.setControllerFactory(context::getBean);
         Parent root = loader.load();
         stage.setTitle("ORM With SPRING & HIBERNATE");
-        stage.setScene(new Scene(root, 900, 700));
+        stage.setScene(new Scene(root, 400, 400));
         stage.show();
         stage.setOnCloseRequest(event -> {
             Platform.exit();

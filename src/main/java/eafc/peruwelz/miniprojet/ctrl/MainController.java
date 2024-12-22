@@ -1,5 +1,7 @@
 package eafc.peruwelz.miniprojet.ctrl;
 
+import eafc.peruwelz.miniprojet.MiniprojetApplication;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,100 +9,115 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import eafc.peruwelz.miniprojet.Utils.WindowConfig;
 
 import java.io.IOException;
 
 @Controller
 public class MainController {
 
-    public MenuItem menuItemAlbums;
-    public MenuItem menuItemPlaylists;
-    public MenuItem menuItemAddSong;
-    public MenuItem menuItemClose;
-    public VBox mainView;
+    private final ApplicationContext context;
 
+    @Autowired
+    public MainController(ApplicationContext context) {
+        this.context = context;
+    }
+
+    @FXML
+    private MenuItem menuItemAlbums;
+    @FXML
+    private MenuItem menuItemPlaylists;
+    @FXML
+    private MenuItem menuItemAddSong;
+    @FXML
+    private MenuItem menuItemClose;
+    @FXML
+    private VBox mainView;
 
     @FXML
     public void initialize() {
+        // Méthode appelée automatiquement après l'injection des composants
     }
 
     @FXML
-    public void onShowAlbums() {
-        loadViewInNewWindow("AlbumsView.fxml", "Albums");
+    private void onShowAlbums() {
+        openNewWindow(WindowConfig.ALBUMS_VIEW, WindowConfig.ALBUMS_TITLE);
     }
 
     @FXML
-    public void onShowPlaylists() {
-        loadViewInNewWindow("PlaylistView.fxml", "Playlists");
+    private void onShowPlaylists() {
+        openNewWindow(WindowConfig.PLAYLISTS_VIEW, WindowConfig.PLAYLISTS_TITLE);
     }
 
     @FXML
-    public void onShowAddSong() {
-        loadViewInNewWindow("AddSongView.fxml", "Albums");
+    private void onShowAddSong() {
+        openNewWindow(WindowConfig.ADD_SONG_VIEW, WindowConfig.ADD_SONG_TITLE);
     }
 
     @FXML
-    public void onClose() {
+    private void onShowCatalog() {
+        openNewWindow(WindowConfig.CATALOG_VIEW, WindowConfig.CATALOG_TITLE);
+    }
+
+    @FXML
+    private void onClose() {
         System.exit(0);
     }
 
     @FXML
-    public void onClickPreviousTrack() {
+    private void onClickPreviousTrack() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void onClickPlayTrack() {
+    private void onClickPlayTrack() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void onClickPauseTrack() {
+    private void onClickPauseTrack() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void onClickStopTrack() {
+    private void onClickStopTrack() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void onClickNextTrack() {
+    private void onClickNextTrack() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void setVolume() {
+    private void setVolume() {
         System.out.println("Good Click !");
     }
 
     @FXML
-    public void setProgress() {
+    private void setProgress() {
         System.out.println("Good Click !");
     }
 
-
-
-    public void loadViewInNewWindow(String fxmlFile, String title) {
+    private void openNewWindow(String fxmlPath, String title) {
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            loader.setControllerFactory(context::getBean);
+            VBox newView = loader.load();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-        VBox root = loader.load();
+            Stage newWindow = new Stage();
+            newWindow.setScene(new Scene(newView));
+            newWindow.setTitle(title);
+            newWindow.setResizable(false);
+            newWindow.initModality(Modality.APPLICATION_MODAL);
 
-        Scene scene = new Scene(root);
-
-        Stage newStage = new Stage();
-        newStage.setTitle(title);
-        newStage.setScene(scene);
-        newStage.initOwner(mainView.getScene().getWindow());
-        newStage.setResizable(false);
-        newStage.initModality(Modality.WINDOW_MODAL); // Désactive la fenêtre principale
-        newStage.show();
-
-    } catch (IOException e) {
-        e.printStackTrace();
-        System.err.println("Error loading view: " + fxmlFile);
+            newWindow.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors de l'ouverture de la fenêtre : " + title);
         }
     }
 }

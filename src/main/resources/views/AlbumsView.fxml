@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eafc.peruwelz.mediaplayer.AlbumsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eafc.peruwelz.miniprojet.ctrl.AlbumsController">
    <children>
       <TextField promptText="Search...">
          <VBox.margin>
@@ -72,22 +72,18 @@
             <Insets left="10.0" right="10.0" top="5.0" />
          </VBox.margin>
       </GridPane>
-      <VBox alignment="CENTER" prefHeight="60.0" prefWidth="400.0">
-         <children>
-            <ButtonBar prefHeight="81.0" prefWidth="400.0">
-              <buttons>
-                <Button mnemonicParsing="false" text="Add" />
-                  <Button mnemonicParsing="false" text="Edit" />
-                  <Button mnemonicParsing="false" text="Delete" />
-              </buttons>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets right="75.0" />
-               </VBox.margin>
-            </ButtonBar>
-         </children>
-      </VBox>
+      <ButtonBar prefHeight="81.0" prefWidth="400.0">
+        <buttons>
+          <Button mnemonicParsing="false" text="Add" />
+            <Button mnemonicParsing="false" text="Edit" />
+            <Button mnemonicParsing="false" text="Delete" />
+        </buttons>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets right="10.0" />
+         </VBox.margin>
+      </ButtonBar>
    </children>
 </VBox>

@@ -21,6 +21,7 @@
             <items>
               <MenuItem fx:id="menuItemAlbums" mnemonicParsing="false" onAction="#onShowAlbums" text="Albums" />
                   <MenuItem fx:id="menuItemPlaylists" mnemonicParsing="false" onAction="#onShowPlaylists" text="Playlists" />
+                  <MenuItem fx:id="menuItemCatalog" mnemonicParsing="false" onAction="#onShowCatalog" text="Catalog" />
                   <MenuItem fx:id="menuItemAddSong" mnemonicParsing="false" onAction="#onShowAddSong" text="Add song" />
                   <MenuItem fx:id="menuItemClose" mnemonicParsing="false" onAction="#onClose" text="Close" />
             </items>

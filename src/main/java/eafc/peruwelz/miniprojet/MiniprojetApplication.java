@@ -33,7 +33,7 @@ public class MiniprojetApplication extends Application {
         loader.setControllerFactory(context::getBean);
         Parent root = loader.load();
         stage.setTitle("ORM With SPRING & HIBERNATE");
-        stage.setScene(new Scene(root, 400, 400));
+        stage.setScene(new Scene(root, 500, 500));
         stage.show();
         stage.setOnCloseRequest(event -> {
             Platform.exit();

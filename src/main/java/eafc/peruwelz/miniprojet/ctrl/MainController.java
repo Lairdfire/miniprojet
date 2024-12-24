@@ -31,6 +31,8 @@ public class MainController {
     @FXML
     private MenuItem menuItemPlaylists;
     @FXML
+    private MenuItem menuItemCatalog;
+    @FXML
     private MenuItem menuItemAddSong;
     @FXML
     private MenuItem menuItemClose;
@@ -39,85 +41,58 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // Méthode appelée automatiquement après l'injection des composants
+
     }
 
     @FXML
     private void onShowAlbums() {
-        openNewWindow(WindowConfig.ALBUMS_VIEW, WindowConfig.ALBUMS_TITLE);
-    }
-
-    @FXML
-    private void onShowPlaylists() {
-        openNewWindow(WindowConfig.PLAYLISTS_VIEW, WindowConfig.PLAYLISTS_TITLE);
-    }
-
-    @FXML
-    private void onShowAddSong() {
-        openNewWindow(WindowConfig.ADD_SONG_VIEW, WindowConfig.ADD_SONG_TITLE);
+        System.out.println("onShowAlbums");
     }
 
     @FXML
     private void onShowCatalog() {
-        openNewWindow(WindowConfig.CATALOG_VIEW, WindowConfig.CATALOG_TITLE);
+        System.out.println("onShowCatalog");
     }
 
     @FXML
     private void onClose() {
-        System.exit(0);
+        System.out.println("onClose");
     }
 
     @FXML
     private void onClickPreviousTrack() {
-        System.out.println("Good Click !");
+        System.out.println("onClickPreviousTrack");
     }
 
     @FXML
     private void onClickPlayTrack() {
-        System.out.println("Good Click !");
+        System.out.println("onClickPlayTrack");
     }
 
     @FXML
     private void onClickPauseTrack() {
-        System.out.println("Good Click !");
+        System.out.println("onClickPauseTrack");
     }
 
     @FXML
     private void onClickStopTrack() {
-        System.out.println("Good Click !");
+        System.out.println("onClickStopTrack");
     }
 
     @FXML
     private void onClickNextTrack() {
-        System.out.println("Good Click !");
+        System.out.println("onClickNextTrack");
     }
 
     @FXML
     private void setVolume() {
-        System.out.println("Good Click !");
+        System.out.println("setVolume");
     }
 
     @FXML
     private void setProgress() {
-        System.out.println("Good Click !");
+        System.out.println("setProgress");
     }
 
-    private void openNewWindow(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            loader.setControllerFactory(context::getBean);
-            VBox newView = loader.load();
-
-            Stage newWindow = new Stage();
-            newWindow.setScene(new Scene(newView));
-            newWindow.setTitle(title);
-            newWindow.setResizable(false);
-            newWindow.initModality(Modality.APPLICATION_MODAL);
-
-            newWindow.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erreur lors de l'ouverture de la fenêtre : " + title);
-        }
-    }
 }
+

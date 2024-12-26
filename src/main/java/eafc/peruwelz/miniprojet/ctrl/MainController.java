@@ -1,6 +1,8 @@
 package eafc.peruwelz.miniprojet.ctrl;
 
 import eafc.peruwelz.miniprojet.MiniprojetApplication;
+import eafc.peruwelz.miniprojet.Utils.WindowHelper;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,17 +48,17 @@ public class MainController {
 
     @FXML
     private void onShowAlbums() {
-        System.out.println("onShowAlbums");
+        WindowHelper.openWindow(WindowConfig.ALBUMS_VIEW, WindowConfig.ALBUMS_TITLE, (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
     private void onShowCatalog() {
-        System.out.println("onShowCatalog");
+        WindowHelper.openWindow(WindowConfig.TRACKS_CATALOG_VIEW, WindowConfig.TRACKS_CATALOG_TITLE, (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
     private void onClose() {
-        System.out.println("onClose");
+        Platform.exit();
     }
 
     @FXML

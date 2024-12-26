@@ -1,5 +1,7 @@
 package eafc.peruwelz.miniprojet;
 
+import eafc.peruwelz.miniprojet.Utils.WindowConfig;
+import eafc.peruwelz.miniprojet.Utils.WindowHelper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,16 +30,17 @@ public class MiniprojetApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/MainView.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        // Initialiser WindowConfig avec le contexte Spring
+        WindowHelper.initialize(context);
+
+        // Charger la vue principale
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(WindowConfig.MAIN_VIEW));
         loader.setControllerFactory(context::getBean);
-        Parent root = loader.load();
-        stage.setTitle("ORM With SPRING & HIBERNATE");
-        stage.setScene(new Scene(root, 500, 500));
-        stage.show();
-        stage.setOnCloseRequest(event -> {
-            Platform.exit();
-        });
+        Scene scene = new Scene(loader.load());
+        primaryStage.setTitle(WindowConfig.MAIN_TITLE);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     @Override

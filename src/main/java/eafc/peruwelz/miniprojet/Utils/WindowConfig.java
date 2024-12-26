@@ -8,7 +8,7 @@ public class WindowConfig {
     public static final String EDIT_ALBUM_VIEW = "/views/EditAlbumView.fxml";
     public static final String EDIT_TRACK_VIEW = "/views/EditTrackDetailsView.fxml";
     public static final String MAIN_VIEW = "/views/MainView.fxml";
-    public static final String TRACKS_CATALOG_VIEW = "/views/TracksCatalog.fxml";
+    public static final String TRACKS_CATALOG_VIEW = "/views/TracksCatalogView.fxml";
 
     // Titres des fenêtres
     public static final String ADD_TRACKS_TITLE = "Add tracks";

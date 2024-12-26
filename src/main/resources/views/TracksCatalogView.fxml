@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="catalogView" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eafc.peruwelz.miniprojet.ctrl.CatalogController">
    <children>
       <HBox alignment="CENTER" prefHeight="86.0" prefWidth="500.0">
          <children>
@@ -38,9 +37,10 @@
       </TableView>
       <ButtonBar prefHeight="63.0" prefWidth="500.0">
         <buttons>
-          <Button mnemonicParsing="false" text="Play" />
-            <Button mnemonicParsing="false" text="Edit" />
-            <Button mnemonicParsing="false" text="Delete" />
+          <Button fx:id="btn_CatalogPlay" mnemonicParsing="false" onAction="#CatalogOnPlay" text="Play" />
+            <Button fx:id="btn_CatalogAdd" mnemonicParsing="false" onAction="#CatalogOnAdd" text="Add" />
+            <Button fx:id="btn_CatalogEdit" mnemonicParsing="false" onAction="#CatalogOnEdit" text="Edit" />
+            <Button fx:id="btn_CatalogDelete" mnemonicParsing="false" onAction="#CatalogOnDelete" text="Delete" />
         </buttons>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" />

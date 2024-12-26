@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="albumView" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eafc.peruwelz.miniprojet.ctrl.AlbumController">
    <children>
       <HBox alignment="CENTER" prefHeight="55.0" prefWidth="500.0">
          <children>
@@ -87,11 +86,11 @@
          </VBox.margin>
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" />
-      <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="173.0" prefWidth="490.0">
+      <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="173.0" prefWidth="490.0">
         <buttons>
-          <Button mnemonicParsing="false" text="Delete" />
-            <Button mnemonicParsing="false" text="Edit" />
-            <Button mnemonicParsing="false" text="Play" />
+            <Button fx:id="btn_AlbumPLay" mnemonicParsing="false" onAction="#AlbumOnPlay" text="Play" />
+            <Button fx:id="btn_AlbumEdit" mnemonicParsing="false" onAction="#AlbumOnEdit" text="Edit" />
+          <Button fx:id="btn_AlbumDelete" mnemonicParsing="false" onAction="#AlbumOnDelete" text="Delete" />
         </buttons>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

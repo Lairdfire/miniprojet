@@ -11,14 +11,11 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class CatalogController {
 
+
     @FXML
     private VBox catalogView ;
     @FXML
-    private Button btn_CatalogPlay ;
-    @FXML
-    private Button btn_CatalogEdit ;
-    @FXML
-    private Button btn_CatalogDelete ;
+    private Button btn_CatalogPlay, btn_CatalogEdit, btn_CatalogDelete, btn_CatalogAdd;
 
     @FXML
     private void CatalogOnPlay() {

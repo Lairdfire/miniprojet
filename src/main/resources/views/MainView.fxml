@@ -41,9 +41,9 @@
       </Label>
       <TableView fx:id="fileTableView" prefHeight="338.0" prefWidth="480.0">
         <columns>
-          <TableColumn prefWidth="138.0" text="Song" />
-          <TableColumn prefWidth="133.0" text="Artist" />
-            <TableColumn prefWidth="124.0" text="Album" />
+          <TableColumn fx:id="colTrackTitle" prefWidth="138.0" text="Song" />
+          <TableColumn fx:id="colArtist" prefWidth="133.0" text="Artist" />
+            <TableColumn fx:id="colAlbum" prefWidth="124.0" text="Album" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

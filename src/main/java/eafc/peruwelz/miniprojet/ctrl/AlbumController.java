@@ -16,13 +16,7 @@ public class AlbumController {
     private VBox albumView;
 
     @FXML
-    private Button btn_AlbumDelete ;
-
-    @FXML
-    private Button btn_AlbumEdit ;
-
-    @FXML
-    private Button btn_AlbumPLay ;
+    private Button btn_AlbumDelete, btn_AlbumEdit, btn_AlbumPLay ;
 
     @FXML
     private void AlbumOnDelete() {

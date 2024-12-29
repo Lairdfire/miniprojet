@@ -1,8 +1,11 @@
 package eafc.peruwelz.miniprojet.service;
 
+import javafx.beans.property.SimpleObjectProperty;
+
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import javafx.util.Duration;
 import java.util.List;
 
 public class playerService {
@@ -12,7 +15,12 @@ public class playerService {
     private List<String> playlist;
     private int currentTrackIndex = -1;
 
+    // Variable pour volume slider
     private double volume = 1.0 ;
+
+    //Variables pour progress slider
+    private final SimpleObjectProperty<Duration> currentTime = new SimpleObjectProperty<>(Duration.ZERO);
+    private Duration totalDuration = Duration.ZERO;
 
     public void setPlaylist(List<String> playlist) {
         this.playlist = playlist;
@@ -145,4 +153,34 @@ public class playerService {
             System.out.println("No active clip to set volume.");
         }
     }
+
+    public SimpleObjectProperty<Duration> currentTimeProperty() {
+        return currentTime;
+    }
+
+    public Duration getTotalDuration() {
+        return totalDuration;
+    }
+
+    public void setTotalDuration(Duration totalDuration) {
+        this.totalDuration = totalDuration;
+    }
+
+    public void seek(double progress) {
+        if (audioClip != null) {
+            long newFramePosition = (long) (audioClip.getFrameLength() * progress); // Calcul du nouveau cadre
+            audioClip.setFramePosition((int) newFramePosition); // Déplace la position de lecture
+
+            double newTimeInSeconds = totalDuration.toSeconds() * progress;
+            System.out.println("Seeking to: " + newTimeInSeconds + " seconds");
+            currentTime.set(Duration.seconds(newTimeInSeconds)); // Mise à jour de la propriété
+        } else {
+            System.out.println("Audio clip is null or not loaded.");
+        }
+    }
+
+    public Clip getAudioClip() {
+        return audioClip;
+    }
+
 }

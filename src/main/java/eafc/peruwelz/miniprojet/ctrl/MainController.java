@@ -1,21 +1,21 @@
 package eafc.peruwelz.miniprojet.ctrl;
 
+import eafc.peruwelz.miniprojet.Utils.WindowConfig;
 import eafc.peruwelz.miniprojet.Utils.WindowHelper;
 import eafc.peruwelz.miniprojet.domain.Tartist;
 import eafc.peruwelz.miniprojet.domain.Ttracks;
 import eafc.peruwelz.miniprojet.repos.TtracksRepository;
 import eafc.peruwelz.miniprojet.service.playerService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -27,6 +27,7 @@ public class MainController {
 
     private final playerService playerService = new playerService();
     private final ApplicationContext context;
+
 
     @Autowired
     public MainController(ApplicationContext context) {
@@ -55,8 +56,8 @@ public class MainController {
     private TableColumn<Ttracks, String> colAlbum;
 
     @FXML
-    private Slider volumeSlider;
-
+    private Slider volumeSlider, progressSlider;
+    private Timeline progressUpdater;
 
     @FXML
     public void initialize() {
@@ -73,6 +74,31 @@ public class MainController {
         volumeSlider.setValue(100);
 
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> setVolume((float) newValue.doubleValue()));
+
+        progressSlider.setMin(0);
+        progressSlider.setMax(100);
+        progressSlider.setValue(0);
+
+        // Permettre à l'utilisateur de manipuler le slider pour changer la position
+        progressSlider.setOnMouseReleased(event -> {
+            double progress = progressSlider.getValue();
+            playerService.seek(progress / 100); // Exemple : seek() attend une valeur entre 0 et 1
+        });
+
+        // Mettre à jour le slider en fonction de la progression
+        playerService.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+            double progress = newTime.toSeconds() / playerService.getTotalDuration().toSeconds() * 100;
+            progressSlider.setValue(progress);
+        });
+
+        progressUpdater = new Timeline(new KeyFrame(Duration.millis(500), event -> {
+            if (playerService.getAudioClip() != null && playerService.getAudioClip().isRunning()) {
+                double progress = playerService.getAudioClip().getFramePosition() / (double) playerService.getAudioClip().getFrameLength();
+                progressSlider.setValue(progress * 100);
+            }
+        }));
+        progressUpdater.setCycleCount(Timeline.INDEFINITE);
+        progressUpdater.play();
     }
 
     private void setupTableColumns() {
@@ -105,12 +131,12 @@ public class MainController {
 
     @FXML
     private void onShowAlbums() {
-        WindowHelper.openWindow("albums_view.fxml", "Albums", (Stage) mainView.getScene().getWindow());
+        WindowHelper.openWindow(WindowConfig.ALBUMS_VIEW,WindowConfig.ALBUMS_TITLE, (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
     private void onShowCatalog() {
-        WindowHelper.openWindow("catalog_view.fxml", "Catalog", (Stage) mainView.getScene().getWindow());
+        WindowHelper.openWindow(WindowConfig.TRACKS_CATALOG_VIEW,WindowConfig.TRACKS_CATALOG_TITLE, (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
@@ -124,6 +150,7 @@ public class MainController {
 
         if (selectedTrack != null && selectedTrack.getTraPath() != null) {
             playerService.play(selectedTrack.getTraPath());
+            playerService.setTotalDuration(Duration.seconds(playerService.getAudioClip().getMicrosecondLength() / 1_000_000.0));
         } else {
             System.out.println("No track selected or file path unavailable.");
         }
@@ -187,6 +214,7 @@ public class MainController {
         System.out.println("Volume set to: " + volume);
     }
 
-    public void setProgress(MouseEvent mouseEvent) {
+    public void setProgress() {
     }
+
 }

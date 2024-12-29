@@ -1,41 +1,31 @@
 package eafc.peruwelz.miniprojet.ctrl;
 
-import eafc.peruwelz.miniprojet.MiniprojetApplication;
 import eafc.peruwelz.miniprojet.Utils.WindowHelper;
 import eafc.peruwelz.miniprojet.domain.Tartist;
 import eafc.peruwelz.miniprojet.domain.Ttracks;
-import eafc.peruwelz.miniprojet.repos.TalbumRepository;
-import eafc.peruwelz.miniprojet.repos.TartistRepository;
-import eafc.peruwelz.miniprojet.repos.TgenreRepository;
 import eafc.peruwelz.miniprojet.repos.TtracksRepository;
+import eafc.peruwelz.miniprojet.service.playerService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import eafc.peruwelz.miniprojet.Utils.WindowConfig;
-
-import javax.print.attribute.standard.Media;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 @Controller
 public class MainController {
 
-    private Media mediaPlayer ;
-
+    private final playerService playerService = new playerService();
     private final ApplicationContext context;
 
     @Autowired
@@ -46,20 +36,11 @@ public class MainController {
     @Autowired
     private TtracksRepository tracksRepository;
 
-    @Autowired
-    private TalbumRepository albumRepository;
-
-    @Autowired
-    private TgenreRepository genreRepository;
-
-    @Autowired
-    private TartistRepository artistRepository;
-
     @FXML
     private VBox mainView;
 
     @FXML
-    private MenuItem menuItemAlbums, menuItemPlaylists, menuItemCatalog, menuItemAddSong, menuItemClose ;
+    private MenuItem menuItemAlbums, menuItemPlaylists, menuItemCatalog, menuItemAddSong, menuItemClose;
 
     @FXML
     private TableView<Ttracks> fileTableView;
@@ -74,13 +55,31 @@ public class MainController {
     private TableColumn<Ttracks, String> colAlbum;
 
     @FXML
+    private Slider volumeSlider;
+
+
+    @FXML
     public void initialize() {
+        setupTableColumns();
+        loadTracks();
+
+        // Listener pour détecter les changements de tri
+        fileTableView.getSortOrder().addListener((ListChangeListener<TableColumn<Ttracks, ?>>) change -> {
+            updatePlaylistAfterSort();
+        });
+
+        volumeSlider.setMin(0);
+        volumeSlider.setMax(100);
+        volumeSlider.setValue(100);
+
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> setVolume((float) newValue.doubleValue()));
+    }
+
+    private void setupTableColumns() {
         colTrackTitle.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTraTitre()));
 
         colArtist.setCellValueFactory(data -> {
-            // Récupérer les artistes liés à la piste
             Set<Tartist> artists = data.getValue().getTtrackArtistTartists();
-            // Concaténer les noms des artistes en une seule chaîne
             String artistNames = artists.stream()
                     .map(Tartist::getArtName)
                     .reduce((name1, name2) -> name1 + ", " + name2)
@@ -89,24 +88,29 @@ public class MainController {
         });
 
         colAlbum.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTraAlbum().getAlbTitre()));
-
-        loadTracks();
     }
 
-    private void loadTracks() {
+    public void loadTracks() {
         List<Ttracks> tracks = tracksRepository.findAll();
         fileTableView.getItems().setAll(tracks);
 
+        // Charger la playlist dans le playerService
+        List<String> trackPaths = tracks.stream()
+                .map(Ttracks::getTraPath)
+                .filter(path -> path != null && !path.isEmpty())
+                .toList();
+
+        playerService.setPlaylist(trackPaths);
     }
 
     @FXML
     private void onShowAlbums() {
-        WindowHelper.openWindow(WindowConfig.ALBUMS_VIEW, WindowConfig.ALBUMS_TITLE, (Stage) mainView.getScene().getWindow());
+        WindowHelper.openWindow("albums_view.fxml", "Albums", (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
     private void onShowCatalog() {
-        WindowHelper.openWindow(WindowConfig.TRACKS_CATALOG_VIEW, WindowConfig.TRACKS_CATALOG_TITLE, (Stage) mainView.getScene().getWindow());
+        WindowHelper.openWindow("catalog_view.fxml", "Catalog", (Stage) mainView.getScene().getWindow());
     }
 
     @FXML
@@ -115,54 +119,74 @@ public class MainController {
     }
 
     @FXML
-    private void onClickPreviousTrack() {
-        System.out.println("onClickPreviousTrack");
-    }
-
-    @FXML
     private void onClickPlayTrack() {
-        // Récupérer la piste sélectionnée
         Ttracks selectedTrack = fileTableView.getSelectionModel().getSelectedItem();
 
-        if (selectedTrack != null) {
-            String trackPath = selectedTrack.getTraPath();
-            System.out.println("Playing track: " + selectedTrack.getTraTitre() + " from path: " + trackPath);
-
-            // Passer à l'étape suivante pour lire le fichier
-            //playTrack(trackPath);
+        if (selectedTrack != null && selectedTrack.getTraPath() != null) {
+            playerService.play(selectedTrack.getTraPath());
         } else {
-            System.out.println("No track selected!");
+            System.out.println("No track selected or file path unavailable.");
         }
     }
 
     @FXML
     private void onClickPauseTrack() {
-        System.out.println("onClickPauseTrack");
+        playerService.pause();
     }
 
     @FXML
     private void onClickStopTrack() {
-        System.out.println("onClickStopTrack");
+        playerService.stop();
+    }
+
+    @FXML
+    private void onClickPreviousTrack() {
+        if (!fileTableView.getItems().isEmpty()) {
+            playerService.previousTrack();
+            updateSelectedTrackInTable();
+        } else {
+            System.out.println("No tracks available to navigate.");
+        }
     }
 
     @FXML
     private void onClickNextTrack() {
-        System.out.println("onClickNextTrack");
+        if (!fileTableView.getItems().isEmpty()) {
+            playerService.nextTrack();
+            updateSelectedTrackInTable();
+        } else {
+            System.out.println("No tracks available to navigate.");
+        }
     }
 
-    @FXML
-    private void setVolume() {
-        System.out.println("setVolume");
+    private void updateSelectedTrackInTable() {
+        int currentTrackIndex = playerService.getCurrentTrackIndex();
+        if (currentTrackIndex >= 0 && currentTrackIndex < fileTableView.getItems().size()) {
+            fileTableView.getSelectionModel().select(currentTrackIndex);
+        }
     }
 
-    @FXML
-    private void setProgress() {
-        System.out.println("setProgress");
+    private void updatePlaylistAfterSort() {
+        List<String> sortedTrackPaths = fileTableView.getItems().stream()
+                .map(Ttracks::getTraPath)
+                .filter(path -> path != null && !path.isEmpty())
+                .toList();
+
+        playerService.setPlaylist(sortedTrackPaths);
+
+        Ttracks selectedTrack = fileTableView.getSelectionModel().getSelectedItem();
+        if (selectedTrack != null) {
+            int newIndex = sortedTrackPaths.indexOf(selectedTrack.getTraPath());
+            playerService.setCurrentTrackIndex(newIndex);
+        }
     }
 
+    public void setVolume(float volume) {
+        // Ajuster le volume dans le service audio
+        playerService.setVolume(volume / 100); // Supposons que le slider donne des valeurs de 0 à 100
+        System.out.println("Volume set to: " + volume);
+    }
 
-
-
-
+    public void setProgress(MouseEvent mouseEvent) {
+    }
 }
-

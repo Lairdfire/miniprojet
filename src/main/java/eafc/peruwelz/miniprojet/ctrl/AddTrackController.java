@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import eafc.peruwelz.miniprojet.repos.TtracksRepository;
 import eafc.peruwelz.miniprojet.repos.TalbumRepository;
@@ -35,9 +34,6 @@ public class AddTrackController {
 
     @FXML
     private Button btn_CatalogFile, btn_CatalogAddTrack, btn_CatalogCancel;
-
-    @Autowired
-    private ApplicationContext context;
 
     @Autowired
     private TtracksRepository ttracksRepository;
@@ -146,24 +142,8 @@ public class AddTrackController {
             newTrack.setTraTitre(title);
             newTrack.setTraAlbum(album);
             newTrack.setTraPath(path);
-
-            // Gestion des valeurs optionnelles
-            if (!trackNumberText.isEmpty()) {
-                try {
-                    newTrack.setTraNr(Integer.parseInt(trackNumberText));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid track number format. Setting default value.");
-                    newTrack.setTraNr(0); // Default value if parsing fails
-                }
-            }
-
-            if (!duration.isEmpty()) {
-                try {
-                    newTrack.setTraDuree(LocalTime.parse(duration));
-                } catch (Exception e) {
-                    System.out.println("Invalid duration format. Skipping.");
-                }
-            }
+            newTrack.setTraNr(Integer.parseInt(trackNumberText));
+            newTrack.setTraDuree(LocalTime.parse(duration));
 
             if (newTrack.getTtrackGenreTgenres() == null) {
                 newTrack.setTtrackGenreTgenres(new HashSet<>());
@@ -179,11 +159,6 @@ public class AddTrackController {
             System.out.println("Track added to database!");
 
             clearFields();
-
-            MainController mainController = context.getBean(MainController.class);
-            mainController.loadTracks();
-
-            System.out.println("Main view refreshed successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error while adding the track.");
